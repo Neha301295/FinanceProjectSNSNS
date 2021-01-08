@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="dbfinanceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Admin">
+    <Key>
+      <PropertyRef Name="username" />
+    </Key>
+    <Property Name="username" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Phone" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="30" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Card">
+    <Key>
+      <PropertyRef Name="Card_Type" />
+    </Key>
+    <Property Name="Card_Type" Type="bit" Nullable="false" />
+    <Property Name="Total_Credit" Type="money" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Cart">
+    <Key>
+      <PropertyRef Name="Card_ID" />
+      <PropertyRef Name="Product_ID" />
+    </Key>
+    <Property Name="Card_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Product_ID" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="int" />
+  </EntityType>
+  <EntityType Name="EMICard">
+    <Key>
+      <PropertyRef Name="Card_Number" />
+    </Key>
+    <Property Name="Card_Number" Type="int" Nullable="false" />
+    <Property Name="username" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Card_Type" Type="bit" />
+    <Property Name="valid" Type="date" Nullable="false" />
+    <Property Name="Active" Type="bit" Nullable="false" />
+    <Property Name="admin_username" Type="varchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="Products">
+    <Key>
+      <PropertyRef Name="Product_ID" />
+    </Key>
+    <Property Name="Product_ID" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Cost" Type="money" Nullable="false" />
+    <Property Name="imagePath" Type="varchar" MaxLength="50" />
+    <Property Name="Details" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RegisterBank">
+    <Key>
+      <PropertyRef Name="username" />
+    </Key>
+    <Property Name="Name" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="email" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="Phone_No" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="username" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Address" Type="text" Nullable="false" />
+    <Property Name="Card_Type" Type="bit" Nullable="false" />
+    <Property Name="Fees_Paid" Type="bit" />
+    <Property Name="Bank_Name" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="Account_Number" Type="int" Nullable="false" />
+    <Property Name="IFSC_Code" Type="varchar" MaxLength="11" Nullable="false" />
+    <Property Name="document" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Transactions">
+    <Key>
+      <PropertyRef Name="Transaction_ID" />
+    </Key>
+    <Property Name="Transaction_ID" Type="int" Nullable="false" />
+    <Property Name="Product_ID" Type="int" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="Amount_Paid" Type="money" Nullable="false" />
+    <Property Name="Card_Number" Type="int" />
+  </EntityType>
+  <Association Name="FK__Cart__Product_ID__1920BF5C">
+    <End Role="Products" Type="Self.Products" Multiplicity="1" />
+    <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="Product_ID" />
+      </Principal>
+      <Dependent Role="Cart">
+        <PropertyRef Name="Product_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__EMICard__admin_u__20C1E124">
+    <End Role="Admin" Type="Self.Admin" Multiplicity="0..1" />
+    <End Role="EMICard" Type="Self.EMICard" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Admin">
+        <PropertyRef Name="username" />
+      </Principal>
+      <Dependent Role="EMICard">
+        <PropertyRef Name="admin_username" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__EMICard__Card_Ty__1ED998B2">
+    <End Role="Card" Type="Self.Card" Multiplicity="0..1" />
+    <End Role="EMICard" Type="Self.EMICard" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Card">
+        <PropertyRef Name="Card_Type" />
+      </Principal>
+      <Dependent Role="EMICard">
+        <PropertyRef Name="Card_Type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__EMICard__usernam__1DE57479">
+    <End Role="RegisterBank" Type="Self.RegisterBank" Multiplicity="1" />
+    <End Role="EMICard" Type="Self.EMICard" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RegisterBank">
+        <PropertyRef Name="username" />
+      </Principal>
+      <Dependent Role="EMICard">
+        <PropertyRef Name="username" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Transacti__Card___24927208">
+    <End Role="EMICard" Type="Self.EMICard" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EMICard">
+        <PropertyRef Name="Card_Number" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="Card_Number" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Transacti__Produ__239E4DCF">
+    <End Role="Products" Type="Self.Products" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="Product_ID" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="Product_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="dbfinanceModelStoreContainer">
+    <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Card" EntityType="Self.Card" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Cart" EntityType="Self.Cart" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EMICard" EntityType="Self.EMICard" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RegisterBank" EntityType="Self.RegisterBank" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Cart__Product_ID__1920BF5C" Association="Self.FK__Cart__Product_ID__1920BF5C">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Cart" EntitySet="Cart" />
+    </AssociationSet>
+    <AssociationSet Name="FK__EMICard__admin_u__20C1E124" Association="Self.FK__EMICard__admin_u__20C1E124">
+      <End Role="Admin" EntitySet="Admin" />
+      <End Role="EMICard" EntitySet="EMICard" />
+    </AssociationSet>
+    <AssociationSet Name="FK__EMICard__Card_Ty__1ED998B2" Association="Self.FK__EMICard__Card_Ty__1ED998B2">
+      <End Role="Card" EntitySet="Card" />
+      <End Role="EMICard" EntitySet="EMICard" />
+    </AssociationSet>
+    <AssociationSet Name="FK__EMICard__usernam__1DE57479" Association="Self.FK__EMICard__usernam__1DE57479">
+      <End Role="RegisterBank" EntitySet="RegisterBank" />
+      <End Role="EMICard" EntitySet="EMICard" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Transacti__Card___24927208" Association="Self.FK__Transacti__Card___24927208">
+      <End Role="EMICard" EntitySet="EMICard" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Transacti__Produ__239E4DCF" Association="Self.FK__Transacti__Produ__239E4DCF">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
